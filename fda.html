@@ -1,0 +1,74 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FDA Device Reports Case Study | Jared Ozarzak</title><link rel="stylesheet" href="style.css"></head><body>
+<nav><div class="wrap"><a class="brand" href="index.html">Jared Ozarzak</a><span class="links"><a href="index.html#projects">All projects</a><a href="index.html#contact">Contact</a></span></div></nav>
+<article>
+<a class="back" href="index.html#projects">← Back to projects</a>
+<div class="eyebrow" style="margin-top:22px">Case study · Python · SQL · REST API</div>
+<h1 style="font-size:clamp(30px,5vw,42px)">FDA Device Reports: What Gets Reported, and Can You Trust the Data?</h1>
+
+<img class="hero-img" src="dashboard.png" alt="Monthly adverse event reports and top 10 device types by report volume" onerror="this.style.display='none'">
+
+<span class="step">Why this project</span>
+<h2 style="margin-top:6px">Public data is free. Clean data isn't.</h2>
+<p>The FDA publishes every medical device adverse event report it receives. It's a goldmine for hospitals, device companies, and quality teams, but the raw data comes back as messy, nested JSON with bad dates, inconsistent text, and missing fields. I wanted to do what a data analyst actually does on day one of a job: pull data from a real source, clean it, load it into a database, and prove it's trustworthy before answering anything.</p>
+
+<div class="callout"><strong>Why keep reading:</strong> this isn't just a chart. It's the full pipeline (API → cleaning → quality checks → SQL → findings), with 5 automated checks that run before any number gets trusted.</div>
+
+<span class="step">The data</span>
+<h2 style="margin-top:6px">What and where</h2>
+<ul>
+<li><strong>Source:</strong> FDA MAUDE adverse event reports through the public openFDA REST API</li>
+<li><strong>Scope:</strong> reports received in 2025, pulled as <strong>10,000 records</strong> through <strong>10 paginated API calls</strong> of 1,000 each, with automatic retries</li>
+<li><strong>Fields kept:</strong> 11, flattened out of nested JSON: report ID, date received, date of event, event type, report source, generic name, brand name, manufacturer, product code, device class, medical specialty</li>
+<li><strong>Caveats:</strong> these are the first 10,000 reports the API returned, not a random sample, and a report doesn't prove a device caused harm</li>
+</ul>
+
+<span class="step">The analysis</span>
+<h2 style="margin-top:6px">How I did it, and why each tool</h2>
+<h3>1. Pull: Python + requests</h3>
+<p>The API caps each call at 1,000 records, so I wrote a loop that pages through 10 calls, retries on errors, and pauses between requests so I don't hit rate limits.</p>
+<h3>2. Audit before cleaning</h3>
+<p>Before touching anything, I profiled every field (percent missing, unique values, duplicate report IDs). You can't fix what you haven't measured.</p>
+<h3>3. Clean: pandas</h3>
+<p>Removed duplicate reports, converted text dates to real dates (bad values became blank instead of crashing), standardized text (trimmed and uppercased) so "Infusion Pump" and "infusion pump " count as one device, and grouped junk event types like "No answer provided" into UNKNOWN.</p>
+<p>I also calculated <strong>reporting lag</strong> (days from event to FDA receipt) and set a valid range of 0–3,650 days. Any report outside it, either "received" before the event happened or over 10 years later, gets flagged as missing instead of letting them skew the average.</p>
+<h3>4. Query: SQLite + SQL</h3>
+<p>I loaded the clean table into SQLite and answered 5 questions with SQL, because that's how analysts query data on the job: event type breakdown, top 10 device types with their injury/death share, monthly volume trend, top manufacturers with average reporting lag, and reports by medical specialty.</p>
+<pre>-- Monthly reports + % change from the month before
+WITH m AS (
+  SELECT substr(date_received, 1, 7) AS month, COUNT(*) AS reports
+  FROM events GROUP BY month)
+SELECT month, reports,
+       ROUND(100.0 * (reports - LAG(reports) OVER (ORDER BY month))
+             / LAG(reports) OVER (ORDER BY month), 1) AS mom_pct
+FROM m ORDER BY month;</pre>
+<p>Plain English: count reports per month, then compare each month to the one before it. The CTE keeps it readable and the LAG window function does the comparison without a self-join.</p>
+<h3>5. Visualize</h3>
+<p>A line chart for the monthly trend (time reads best left to right) and a horizontal bar chart for the top 10 devices (long device names fit on the side).</p>
+<h3>6. Validate: 5 automated checks</h3>
+<table><tr><th>Check built into the pipeline</th></tr>
+<tr><td>No duplicate report IDs</td></tr><tr><td>Every row loaded into SQL</td></tr>
+<tr><td>Event type percentages sum to ~100%</td></tr><tr><td>No negative reporting lags</td></tr>
+<tr><td>All received dates fall in 2025</td></tr></table>
+
+<span class="step">What I found</span>
+<h2 style="margin-top:6px">The patterns</h2>
+<ul>
+<li>Public data includes impossible reporting lags, a reminder to validate dates before reporting any time-based metric</li>
+</ul>
+<h3>What a business could do with this</h3>
+<ul>
+<li>A device company's quality team could track its own products' report volume and injury/death share month over month and act on spikes early</li>
+<li>Any team reporting "time to report" should filter impossible lags first, or the average will be wrong</li>
+</ul>
+
+<span class="step">Takeaways</span>
+<h2 style="margin-top:6px">The short version</h2>
+<p>I built a repeatable pipeline from a live government API to a SQL database, caught and handled bad records before they could distort results, and answered real questions with SQL. The pipeline runs 5 automated checks before any number gets reported.</p>
+
+<span class="step">Next step</span>
+<h2 style="margin-top:6px">See the code or say hi</h2>
+<div class="btns"><a class="btn primary" href="https://github.com/JaredOzarzak/JaredOzarzak.github.io/blob/main/Medical_Device_Adverse_Events_openFDA.ipynb">View the notebook</a><a class="btn" href="https://www.linkedin.com/in/jared-ozarzak">Connect on LinkedIn</a><a class="btn" href="index.html#projects">More projects</a></div>
+</article>
+<footer><div class="wrap">Jared Ozarzak · Columbus, OH · <a href="mailto:jared.ozarzak@outlook.com">jared.ozarzak@outlook.com</a></div></footer>
+</body></html>
