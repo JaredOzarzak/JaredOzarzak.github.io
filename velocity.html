@@ -1,0 +1,58 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fastball Velocity Projection | Jared Ozarzak</title><link rel="stylesheet" href="style.css"></head><body>
+<nav><div class="wrap"><a class="brand" href="index.html">Jared Ozarzak</a><span class="links"><a href="index.html#projects">All projects</a><a href="index.html#contact">Contact</a></span></div></nav>
+<article>
+<a class="back" href="index.html#projects">← Back to projects</a>
+<div class="eyebrow" style="margin-top:22px">Project · Python · Machine Learning</div>
+<h1 style="font-size:clamp(30px,5vw,42px)">Which Pitcher Will Throw the Hardest in 5 Years?</h1>
+
+<span class="step">Why I did this</span>
+<h2 style="margin-top:6px">The question</h2>
+<p>This was a technical assessment: out of the 2025 FCL pitchers, who's most likely to throw the hardest fastball five years from now? The catch: the FCL file had pitching mechanics but no velocity. So I trained a model on a different dataset that had both, then used it to estimate velocity for the FCL guys.</p>
+
+<span class="step">The data</span>
+<h2 style="margin-top:6px">What I worked with</h2>
+<ul>
+<li><strong>Training set:</strong> 8,981 pitches from 203 pitchers, with real velocity and 66 mechanics metrics</li>
+<li><strong>2025 FCL set:</strong> 5,450 pitches from 71 pitchers, after filtering out 2024 rows from the raw file (6,893 rows)</li>
+</ul>
+
+<span class="step">How I did it</span>
+<h2 style="margin-top:6px">Step by step</h2>
+<h3>1. Clean it up</h3>
+<p>Checked both files for missing values, dates, and which columns matched. Kept only the 66 columns in both. Took out pitcher ID and date so the model couldn't cheat with them, and filled blanks with the training set's median.</p>
+<h3>2. Test it the right way</h3>
+<p>Used 5-fold grouped cross-validation by pitcher. In plain English: no pitcher was ever in both the training and the test data, so the model couldn't just memorize a guy.</p>
+<h3>3. Compare models</h3>
+<table><tr><th>Model</th><th>Error (RMSE, mph)</th><th>R²</th></tr>
+<tr><td>Random forest</td><td>2.58</td><td>0.07</td></tr>
+<tr><td>Baseline (just guess the average)</td><td>2.68</td><td>0.00</td></tr>
+<tr><td>Ridge regression</td><td>2.77</td><td>-0.07</td></tr></table>
+<p>The random forest won, but barely. Mechanics alone don't explain much of velocity, and there was no age, strength, or training history in the data.</p>
+<h3>4. Keep it honest</h3>
+<ul>
+<li>Corrected for the model's average over-prediction</li>
+<li>Only ranked pitchers with at least 20 fastballs (20 of the 71 had fewer), since small samples are noisy</li>
+<li>Re-ran the whole ranking 25 times on resampled data (bootstrap) to see if the top guys held up</li>
+<li>Reported results as <strong>tiers</strong>, not exact numbers, because the error is wide</li>
+</ul>
+
+<span class="step">What I found</span>
+<h2 style="margin-top:6px">The results</h2>
+<ul>
+<li><strong>Pitcher 119</strong> came out on top: about <strong>94 mph</strong> projected on 212 fastballs, and top 5 in all 25 bootstrap runs</li>
+<li>Pitchers 265, 96, 94, 171, and 195 were bunched around 93 mph, within the model's error, so I treated them as one tier</li>
+<li>Pitcher 16 ranked really high but only had 15 fastballs, so I left him out as a likely fluke</li>
+<li>Biggest drivers: torso side-bend at max external rotation, max torso rotation speed, and height</li>
+</ul>
+
+<span class="step">Short version</span>
+<h2 style="margin-top:6px">What I'd tell you in 30 seconds</h2>
+<p>I built a model to estimate velocity for pitchers who didn't have it measured. It only beat guessing the average by a little, so instead of overselling it, I grouped pitchers into tiers and checked that the top guy held up 25 out of 25 times. Being upfront about what the data can't tell you matters as much as the answer.</p>
+
+<span class="step">Next step</span>
+<h2 style="margin-top:6px">See the code or say hi</h2>
+<div class="btns"><a class="btn primary" href="https://github.com/JaredOzarzak/data-analysis-projects/tree/main/Pitcher-Velocity-Projection">View the notebook</a><a class="btn" href="https://www.linkedin.com/in/jared-ozarzak">Connect on LinkedIn</a><a class="btn" href="index.html#projects">More projects</a></div>
+</article>
+<footer><div class="wrap">Jared Ozarzak · Columbus, OH · <a href="mailto:jared.ozarzak@outlook.com">jared.ozarzak@outlook.com</a></div></footer>
+</body></html>
