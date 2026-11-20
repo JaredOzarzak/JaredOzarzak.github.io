@@ -3,38 +3,35 @@
 <nav><div class="wrap"><a class="brand" href="index.html">Jared Ozarzak</a><span class="links"><a href="index.html#projects">All projects</a><a href="index.html#contact">Contact</a></span></div></nav>
 <article>
 <a class="back" href="index.html#projects">← Back to projects</a>
-<div class="eyebrow" style="margin-top:22px">Case study · Python · SQL · REST API</div>
-<h1 style="font-size:clamp(30px,5vw,42px)">FDA Device Reports: What Gets Reported, and Can You Trust the Data?</h1>
+<div class="eyebrow" style="margin-top:22px">Project · Python · SQL</div>
+<h1 style="font-size:clamp(30px,5vw,42px)">FDA Device Reports: What Gets Reported, and Can You Trust It?</h1>
 
 <img class="hero-img" src="dashboard.png" alt="Monthly adverse event reports and top 10 device types by report volume" onerror="this.style.display='none'">
 
-<span class="step">Why this project</span>
-<h2 style="margin-top:6px">Public data is free. Clean data isn't.</h2>
-<p>The FDA publishes every medical device adverse event report it receives. It's a goldmine for hospitals, device companies, and quality teams, but the raw data comes back as messy, nested JSON with bad dates, inconsistent text, and missing fields. I wanted to do what a data analyst actually does on day one of a job: pull data from a real source, clean it, load it into a database, and prove it's trustworthy before answering anything.</p>
-
-<div class="callout"><strong>Why keep reading:</strong> this isn't just a chart. It's the full pipeline (API → cleaning → quality checks → SQL → findings), with 5 automated checks that run before any number gets trusted.</div>
+<span class="step">Why I did this</span>
+<h2 style="margin-top:6px">Can you actually trust public data?</h2>
+<p>The FDA puts every medical device problem report online for free. Sounds great, but the raw data is messy: nested JSON, bad dates, the same device spelled five different ways. I wanted to do what an analyst does on day one: pull real data, clean it, put it in a database, and make sure it's right before answering anything.</p>
 
 <span class="step">The data</span>
-<h2 style="margin-top:6px">What and where</h2>
+<h2 style="margin-top:6px">What I pulled</h2>
 <ul>
-<li><strong>Source:</strong> FDA MAUDE adverse event reports through the public openFDA REST API</li>
-<li><strong>Scope:</strong> reports received in 2025, pulled as <strong>10,000 records</strong> through <strong>10 paginated API calls</strong> of 1,000 each, with automatic retries</li>
-<li><strong>Fields kept:</strong> 11, flattened out of nested JSON: report ID, date received, date of event, event type, report source, generic name, brand name, manufacturer, product code, device class, medical specialty</li>
-<li><strong>Caveats:</strong> these are the first 10,000 reports the API returned, not a random sample, and a report doesn't prove a device caused harm</li>
+<li><strong>10,000 reports</strong> from 2025, pulled from the openFDA API in <strong>10 calls</strong> of 1,000 each</li>
+<li><strong>11 fields</strong> kept: things like date received, event type, device name, manufacturer, and device class</li>
+<li><strong>Heads up:</strong> these are the first 10,000 reports the API gave back, not a random sample. And a report doesn't prove a device caused harm</li>
 </ul>
 
-<span class="step">The analysis</span>
-<h2 style="margin-top:6px">How I did it, and why each tool</h2>
-<h3>1. Pull: Python + requests</h3>
-<p>The API caps each call at 1,000 records, so I wrote a loop that pages through 10 calls, retries on errors, and pauses between requests so I don't hit rate limits.</p>
-<h3>2. Audit before cleaning</h3>
-<p>Before touching anything, I profiled every field (percent missing, unique values, duplicate report IDs). You can't fix what you haven't measured.</p>
-<h3>3. Clean: pandas</h3>
-<p>Removed duplicate reports, converted text dates to real dates (bad values became blank instead of crashing), standardized text (trimmed and uppercased) so "Infusion Pump" and "infusion pump " count as one device, and grouped junk event types like "No answer provided" into UNKNOWN.</p>
-<p>I also calculated <strong>reporting lag</strong> (days from event to FDA receipt) and set a valid range of 0–3,650 days. Any report outside it, either "received" before the event happened or over 10 years later, gets flagged as missing instead of letting them skew the average.</p>
-<h3>4. Query: SQLite + SQL</h3>
-<p>I loaded the clean table into SQLite and answered 5 questions with SQL, because that's how analysts query data on the job: event type breakdown, top 10 device types with their injury/death share, monthly volume trend, top manufacturers with average reporting lag, and reports by medical specialty.</p>
-<pre>-- Monthly reports + % change from the month before
+<span class="step">How I did it</span>
+<h2 style="margin-top:6px">Step by step</h2>
+<h3>1. Pull it (Python)</h3>
+<p>The API only gives 1,000 records at a time, so I wrote a loop that grabs 10 pages, retries if a call fails, and waits a second between calls so I don't get blocked.</p>
+<h3>2. Look before cleaning</h3>
+<p>Before changing anything, I checked every column: what's missing, what's duplicated, what looks weird. You can't fix what you haven't looked at.</p>
+<h3>3. Clean it (pandas)</h3>
+<p>Removed duplicates, fixed dates (bad ones became blank instead of breaking everything), and made text match so "Infusion Pump" and "infusion pump " count as the same device.</p>
+<p>I also figured out <strong>reporting lag</strong>: how many days between the event and the FDA getting the report. Anything under 0 days or over 10 years got flagged, because that's not possible. That caught <strong>23 bad dates</strong>.</p>
+<h3>4. Ask questions (SQL)</h3>
+<p>I loaded the clean data into SQLite and answered 5 questions: event type breakdown, top 10 device types, monthly trend, top manufacturers, and reports by medical specialty. Here's the monthly trend one:</p>
+<pre>-- Reports per month + % change from last month
 WITH m AS (
   SELECT substr(date_received, 1, 7) AS month, COUNT(*) AS reports
   FROM events GROUP BY month)
@@ -42,29 +39,32 @@ SELECT month, reports,
        ROUND(100.0 * (reports - LAG(reports) OVER (ORDER BY month))
              / LAG(reports) OVER (ORDER BY month), 1) AS mom_pct
 FROM m ORDER BY month;</pre>
-<p>Plain English: count reports per month, then compare each month to the one before it. The CTE keeps it readable and the LAG window function does the comparison without a self-join.</p>
-<h3>5. Visualize</h3>
-<p>A line chart for the monthly trend (time reads best left to right) and a horizontal bar chart for the top 10 devices (long device names fit on the side).</p>
-<h3>6. Validate: 5 automated checks</h3>
-<table><tr><th>Check built into the pipeline</th></tr>
-<tr><td>No duplicate report IDs</td></tr><tr><td>Every row loaded into SQL</td></tr>
-<tr><td>Event type percentages sum to ~100%</td></tr><tr><td>No negative reporting lags</td></tr>
-<tr><td>All received dates fall in 2025</td></tr></table>
+<p>In plain English: count reports each month, then compare each month to the one before it.</p>
+<h3>5. Check my work</h3>
+<p>Before I report anything, 5 checks run automatically. <strong>All 5 passed.</strong></p>
+<table><tr><th>Check</th><th>Result</th></tr>
+<tr><td>No duplicate reports</td><td>Passed (0 found)</td></tr>
+<tr><td>Every row made it into SQL</td><td>Passed (10,000 of 10,000)</td></tr>
+<tr><td>Event type percentages add up to 100%</td><td>Passed</td></tr>
+<tr><td>No negative reporting lags</td><td>Passed</td></tr>
+<tr><td>All dates fall in 2025</td><td>Passed</td></tr></table>
 
 <span class="step">What I found</span>
-<h2 style="margin-top:6px">The patterns</h2>
+<h2 style="margin-top:6px">The results</h2>
 <ul>
-<li>Public data includes impossible reporting lags, a reminder to validate dates before reporting any time-based metric</li>
+<li><strong>61.5%</strong> of reports were device malfunctions</li>
+<li>The most-reported device type was <strong>dental implants</strong>, with <strong>1,873 reports</strong></li>
+<li><strong>23 reports</strong> had impossible dates. If you didn't catch those, any "average time to report" number would be wrong</li>
 </ul>
-<h3>What a business could do with this</h3>
+<h3>Why it matters</h3>
 <ul>
-<li>A device company's quality team could track its own products' report volume and injury/death share month over month and act on spikes early</li>
-<li>Any team reporting "time to report" should filter impossible lags first, or the average will be wrong</li>
+<li>A device company could track its own products' reports month to month and catch problems early</li>
+<li>Anyone reporting time-based numbers needs to check dates first, or the average is off</li>
 </ul>
 
-<span class="step">Takeaways</span>
-<h2 style="margin-top:6px">The short version</h2>
-<p>I built a repeatable pipeline from a live government API to a SQL database, caught and handled bad records before they could distort results, and answered real questions with SQL. The pipeline runs 5 automated checks before any number gets reported.</p>
+<span class="step">Short version</span>
+<h2 style="margin-top:6px">What I'd tell you in 30 seconds</h2>
+<p>I pulled 10,000 real FDA reports, cleaned them, put them in a SQL database, and answered real questions. Before trusting any number, I ran 5 checks. All passed, and they caught 23 bad dates that would've thrown off the results.</p>
 
 <span class="step">Next step</span>
 <h2 style="margin-top:6px">See the code or say hi</h2>
