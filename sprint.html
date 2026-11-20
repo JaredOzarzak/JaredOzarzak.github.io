@@ -1,0 +1,58 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sprinting with a Prosthesis | Jared Ozarzak</title><link rel="stylesheet" href="style.css"></head><body>
+<nav><div class="wrap"><a class="brand" href="index.html">Jared Ozarzak</a><span class="links"><a href="index.html#projects">All projects</a><a href="index.html#contact">Contact</a></span></div></nav>
+<article>
+<a class="back" href="index.html#projects">← Back to projects</a>
+<div class="eyebrow" style="margin-top:22px">Project · Python · Statistics</div>
+<h1 style="font-size:clamp(30px,5vw,42px)">Sprinting with a Prosthesis: What Changes?</h1>
+
+<span class="step">Why I did this</span>
+<h2 style="margin-top:6px">The question</h2>
+<p>How does a running prosthesis change the way someone sprints? We compared a sprinter with a below-knee prosthesis to a sprinter without one, looking at force, muscle activity, and joint angles while the foot is on the ground. This was a pilot study for my grad biomechanics class.</p>
+
+<span class="step">The data</span>
+<h2 style="margin-top:6px">What we collected</h2>
+<ul>
+<li><strong>10 sprint trials:</strong> 5 from the runner with the prosthesis, 5 from the control runner</li>
+<li><strong>3 data sources synced together:</strong> force plates (AMTI), muscle activity/EMG (Delsys), and markerless motion capture (Theia3D)</li>
+<li>Left leg = intact leg, right leg = prosthesis side</li>
+</ul>
+
+<span class="step">How I did it</span>
+<h2 style="margin-top:6px">Step by step</h2>
+<h3>1. Clean and line it up (Python)</h3>
+<p>Loaded the exported files in pandas and stretched every ground contact to the same 101 points, so trials of different lengths could be compared apples to apples.</p>
+<h3>2. Compare the whole curve, not just one number</h3>
+<p>Used SPM (statistical parametric mapping), which runs a t-test across the entire ground contact. That shows <em>when</em> the two runners differ, not just whether they do.</p>
+<h3>3. Compare peak joint angles</h3>
+<p>Ran t-tests and boxplots on peak hip, knee, and ankle angles.</p>
+
+<span class="step">What I found</span>
+<h2 style="margin-top:6px">The results</h2>
+<h3>Intact leg</h3>
+<ul>
+<li>Bent less at the hip and knee than the control (p &lt; 0.001 and p = 0.027), a stiffer way of running</li>
+<li>Pushed more force into the ground in the middle of contact</li>
+<li>Hamstrings worked harder early; calves and quads worked harder late</li>
+</ul>
+<h3>Prosthesis side</h3>
+<ul>
+<li>Peak force came later, in the last 20% of contact, from the spring-like blade</li>
+<li>Knee bent more than the control (p = 0.002)</li>
+</ul>
+<p><strong>Big picture:</strong> the intact leg did most of the stabilizing and pushing, while the prosthesis side relied on energy coming back from the blade.</p>
+
+<span class="step">Keep it honest</span>
+<h2 style="margin-top:6px">Limitations</h2>
+<p>It's one person per group with 5 trials each, so these results describe these two runners. They shouldn't be generalized to every sprinter with a prosthesis.</p>
+
+<span class="step">Short version</span>
+<h2 style="margin-top:6px">What I'd tell you in 30 seconds</h2>
+<p>I combined 3 types of data into one clean dataset, then compared two runners across the whole ground contact instead of just one number. The intact leg carried most of the load. And I was clear that with 2 people, it's a pilot, not a final answer.</p>
+
+<span class="step">Next step</span>
+<h2 style="margin-top:6px">See the code or say hi</h2>
+<div class="btns"><a class="btn primary" href="https://github.com/JaredOzarzak/data-analysis-projects/tree/main/Sprint-Prosthesis-Biomechanics-Pilot">View the notebook</a><a class="btn" href="https://www.linkedin.com/in/jared-ozarzak">Connect on LinkedIn</a><a class="btn" href="index.html#projects">More projects</a></div>
+</article>
+<footer><div class="wrap">Jared Ozarzak · Columbus, OH · <a href="mailto:jared.ozarzak@outlook.com">jared.ozarzak@outlook.com</a></div></footer>
+</body></html>
