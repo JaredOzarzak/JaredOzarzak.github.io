@@ -15,20 +15,21 @@
 <span class="step">The data</span>
 <h2 style="margin-top:6px">What I pulled</h2>
 <ul>
-<li><strong>10,000 reports</strong> from 2025, pulled from the openFDA API in <strong>10 calls</strong> of 1,000 each</li>
+<li><strong>10,000 reports</strong>: 1,000 from each month, January to October 2025, pulled from the openFDA API</li>
+<li><strong>Real monthly totals</strong> for all of 2025 (about 2.9 million reports) for the trend</li>
 <li><strong>11 fields</strong> kept: things like date received, event type, device name, manufacturer, and device class</li>
-<li><strong>Heads up:</strong> these are the first 10,000 reports the API gave back, not a random sample. And a report doesn't prove a device caused harm</li>
+<li><strong>Heads up:</strong> a report doesn't prove a device caused harm</li>
 </ul>
 
 <span class="step">How I did it</span>
 <h2 style="margin-top:6px">Step by step</h2>
 <h3>1. Pull it (Python)</h3>
-<p>The API only gives 1,000 records at a time, so I wrote a loop that grabs 10 pages, retries if a call fails, and waits a second between calls so I don't get blocked.</p>
+<p>The API only gives 1,000 records at a time, so I wrote a loop that grabs 1,000 from each month, retries if a call fails, and waits a second between calls so I don't get blocked. My first version just grabbed the first 10,000 reports, and they all came from the first days of January, so I changed it to sample the whole year.</p>
 <h3>2. Look before cleaning</h3>
 <p>Before changing anything, I checked every column: what's missing, what's duplicated, what looks weird. You can't fix what you haven't looked at.</p>
 <h3>3. Clean it (pandas)</h3>
 <p>Removed duplicates, fixed dates (bad ones became blank instead of breaking everything), and made text match so "Infusion Pump" and "infusion pump " count as the same device.</p>
-<p>I also figured out <strong>reporting lag</strong>: how many days between the event and the FDA getting the report. Anything under 0 days or over 10 years got flagged, because that's not possible. That caught <strong>23 bad dates</strong>.</p>
+<p>I also figured out <strong>reporting lag</strong>: how many days between the event and the FDA getting the report. Anything under 0 days or over 10 years got flagged, because that's not possible. That caught <strong>22 bad dates</strong>.</p>
 <h3>4. Ask questions (SQL)</h3>
 <p>I loaded the clean data into SQLite and answered 5 questions: event type breakdown, top 10 device types, monthly trend, top manufacturers, and reports by medical specialty. Here's the monthly trend one:</p>
 <pre>-- Reports per month + % change from last month
@@ -52,9 +53,10 @@ FROM m ORDER BY month;</pre>
 <span class="step">What I found</span>
 <h2 style="margin-top:6px">The results</h2>
 <ul>
-<li><strong>61.5%</strong> of reports were device malfunctions</li>
-<li>The most-reported device type was <strong>dental implants</strong>, with <strong>1,873 reports</strong></li>
-<li><strong>23 reports</strong> had impossible dates. If you didn't catch those, any "average time to report" number would be wrong</li>
+<li><strong>58.4%</strong> of reports were device malfunctions</li>
+<li>The most-reported device type was <strong>dental implants</strong>, with <strong>1,536 reports</strong></li>
+<li>Reports jumped <strong>37% in June</strong>, peaked in <strong>July</strong> at about 316,000, then dropped 22% in August</li>
+<li><strong>22 reports</strong> had impossible dates. If you didn't catch those, any "average time to report" number would be wrong</li>
 </ul>
 <h3>Why it matters</h3>
 <ul>
@@ -64,7 +66,7 @@ FROM m ORDER BY month;</pre>
 
 <span class="step">Short version</span>
 <h2 style="margin-top:6px">What I'd tell you in 30 seconds</h2>
-<p>I pulled 10,000 real FDA reports, cleaned them, put them in a SQL database, and answered real questions. Before trusting any number, I ran 5 checks. All passed, and they caught 23 bad dates that would've thrown off the results.</p>
+<p>I pulled 10,000 real FDA reports, cleaned them, put them in a SQL database, and answered real questions. Before trusting any number, I ran 5 checks. All passed, and they caught 22 bad dates that would've thrown off the results.</p>
 
 <span class="step">Next step</span>
 <h2 style="margin-top:6px">See the code or say hi</h2>
