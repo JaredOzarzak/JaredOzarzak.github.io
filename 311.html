@@ -7,8 +7,8 @@
 <h1 style="font-size:clamp(30px,5vw,42px)">Columbus 311: What Do Residents Ask the City For, and How Fast Does It Get Done?</h1>
 
 <span class="step">Why I did this</span>
-<h2 style="margin-top:6px">Real operations data from my own city</h2>
-<p>Every pothole, missed trash pickup, and broken streetlight in Columbus gets logged as a 311 request. That's operations data: volume, response times, and which teams are falling behind. I wanted to take a big, messy public dataset from home, clean it, check it, and turn it into answers a city manager could actually use.</p>
+<h2 style="margin-top:6px">It's my city</h2>
+<p>Every pothole, missed trash pickup, and broken streetlight in Columbus gets logged as a 311 request. I'm from Columbus, so I wanted to see what people actually complain about and how fast the city fixes it.</p>
 
 <span class="step">The data</span>
 <h2 style="margin-top:6px">What I pulled</h2>
@@ -19,24 +19,24 @@
 
 <span class="step">How I did it</span>
 <h2 style="margin-top:6px">Step by step</h2>
-<h3>1. Profile it before touching it</h3>
-<p>I checked every column for blanks, repeats, and weird statuses first. 26% of rows had no council district, 3% had no close date, and 13,672 case IDs showed up more than once.</p>
-<h3>2. Don't trust the obvious fix</h3>
-<p>Those 13,672 repeats looked like duplicates, but most were one case with several request types. Only <strong>955</strong> were true duplicates (same case <em>and</em> same request type). Deleting on case ID alone would have thrown out about <strong>12,700 real requests</strong>.</p>
+<h3>1. Look at it first</h3>
+<p>Before changing anything, I looked at every column for blanks, repeats, and weird statuses. 26% of rows had no council district, 3% had no close date, and 13,672 case IDs showed up more than once.</p>
+<h3>2. The duplicates weren't really duplicates</h3>
+<p>Those 13,672 repeats looked like duplicates, but most were one case with several request types. Only <strong>955</strong> were true duplicates (same case <em>and</em> same request type). If I'd just deleted every repeated case ID, I would've thrown out about <strong>12,700 real requests</strong>.</p>
 <h3>3. Clean it (pandas)</h3>
 <ul>
 <li>Removed 955 true duplicates</li>
-<li>Removed 100,325 internal staff notes that aren't resident requests and close in seconds, which would skew timing</li>
-<li>Converted timestamps from UTC to Eastern, so late-December requests stop showing up as January 2026</li>
+<li>Removed 100,325 internal staff notes. They aren't resident requests, and they close in seconds, which would mess up the timing</li>
+<li>Switched the times from UTC to Eastern, so New Year's Eve requests stopped showing up as January 2026</li>
 <li>Flagged 6,451 requests marked Closed with no close date and kept them out of timing</li>
 <li>Filled blank labels with "Unknown"</li>
 </ul>
-<h3>4. Check it before answering anything</h3>
-<p>5 automated checks: no duplicate case/request pairs, row counts reconcile, nothing closed before it was reported, every timed request has a close date, and every request falls in 2025. <strong>The first run failed 3 of 5.</strong> That's how I caught the time zone and missing-date problems. After the fixes, all 5 passed.</p>
-<h3>5. Model it and query it (SQL)</h3>
-<p>Built a small star schema in SQLite (a 209,577-row request fact table joined to a 468-row request type table) and answered 6 questions with JOINs, GROUP BY, HAVING, a CTE, and LAG for month-over-month change.</p>
-<h3>6. Dashboard it (Power BI)</h3>
-<p>Exported the fact and dimension tables for a Power BI dashboard, with a data dictionary that defines every field, business rule, and metric.</p>
+<h3>4. Double-check it</h3>
+<p>I ran 5 checks: no duplicate case/request pairs, row counts reconcile, nothing closed before it was reported, every timed request has a close date, and every request falls in 2025. <strong>The first run failed 3 of 5.</strong> That's how I caught the time zone and missing-date problems. After the fixes, all 5 passed.</p>
+<h3>5. Put it in SQL</h3>
+<p>Built a star schema in SQLite (a 209,577-row request fact table joined to a 468-row request type table) and answered 6 questions with JOINs, GROUP BY, HAVING, a CTE, and LAG for month-over-month change.</p>
+<h3>6. Get it ready for Power BI</h3>
+<p>Exported the tables for a Power BI dashboard, plus a data dictionary that explains every field, rule, and metric.</p>
 
 <span class="step">What I found</span>
 <h2 style="margin-top:6px">The answers</h2>
@@ -684,7 +684,7 @@ L 493.2 184.400781
 
 <span class="step">So what</span>
 <h2 style="margin-top:6px">What I'd tell the city</h2>
-<p>Half the volume is trash and recycling, so small fixes there move the citywide numbers most. Building and Zoning closes fewer than half its requests within a week, so that's where I'd look at staffing or workflow first. And clean data matters: two easy-to-miss problems (fake duplicates and a time zone shift) would have changed the counts by thousands.</p>
+<p>Half of all requests are trash and recycling, so that's where fixes would help the most. Building and Zoning closes less than half its requests within a week, so I'd look at their staffing first. And if I hadn't caught the fake duplicates and the time zone bug, the counts would've been off by thousands.</p>
 
 <span class="step">Files</span>
 <h2 style="margin-top:6px">See the work or say hi</h2>
