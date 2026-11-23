@@ -7,7 +7,7 @@
 | reported_date | datetime | When the resident reported the request (Eastern time) |
 | report_month | text (YYYY-MM) | Month the request was reported |
 | request_type | text | Specific issue reported. Joins to `request_types` |
-| status_group | text | Closed, Canceled, or Open (Open = received, in progress, re-assigned, on hold, or work order issued) |
+| status_group | text | Closed, Canceled, or Open (Open = every other status: received, in progress, re-assigned, on hold, work order or written orders issued, and a handful marked returned or duplicate) |
 | days_to_close | decimal | Days from report to close. Only for Closed requests that have a close date |
 | closed_within_7_days | true/false | Closed within 7 days of being reported. Blank if not timed |
 | councildistrict | text | Columbus City Council district (District 1–9, or Unknown) |
@@ -28,7 +28,7 @@
 - **Timing metrics** use Closed requests with a close date only. Canceled, open, and closed-without-a-date requests are excluded from timing but included in volume.
 - Blank labels are filled with **Unknown**.
 
-## Metrics (Power BI DAX measures)
+## Metrics (defined for the Power BI dashboard)
 | Measure | Definition |
 |---|---|
 | Total Requests | Count of rows in `requests` |
