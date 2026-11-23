@@ -10,7 +10,7 @@
 
 <span class="step">Why I did this</span>
 <h2 style="margin-top:6px">Can you actually trust public data?</h2>
-<p>The FDA puts every medical device problem report online for free. Sounds great, but the raw data is messy: nested JSON, bad dates, the same device spelled five different ways. I wanted to do what an analyst does on day one: pull real data, clean it, put it in a database, and make sure it's right before answering anything.</p>
+<p>The FDA puts every medical device problem report online for free. Sounds great, but the raw data is messy: nested JSON, bad dates, the same device spelled five different ways. So I pulled it, cleaned it, put it in a database, and answered some questions with it.</p>
 
 <span class="step">The data</span>
 <h2 style="margin-top:6px">What I pulled</h2>
@@ -26,7 +26,7 @@
 <h3>1. Pull it (Python)</h3>
 <p>The API only gives 1,000 records at a time, so I wrote a loop that grabs 1,000 from each month, retries if a call fails, and waits a second between calls so I don't get blocked. My first version just grabbed the first 10,000 reports, and they all came from the first days of January, so I changed it to sample the whole year.</p>
 <h3>2. Look before cleaning</h3>
-<p>Before changing anything, I checked every column: what's missing, what's duplicated, what looks weird. You can't fix what you haven't looked at.</p>
+<p>Before changing anything, I checked every column: what's missing, what's duplicated, what looks weird.</p>
 <h3>3. Clean it (pandas)</h3>
 <p>Removed duplicates, fixed dates (bad ones became blank instead of breaking everything), and made text match so "Infusion Pump" and "infusion pump " count as the same device.</p>
 <p>I also figured out <strong>reporting lag</strong>: how many days between the event and the FDA getting the report. Anything under 0 days or over 10 years got flagged, because that's not possible. That caught <strong>22 bad dates</strong>.</p>
@@ -42,7 +42,7 @@ SELECT month, reports,
 FROM m ORDER BY month;</pre>
 <p>In plain English: count reports each month, then compare each month to the one before it.</p>
 <h3>5. Check my work</h3>
-<p>Before I report anything, 5 checks run automatically. <strong>All 5 passed.</strong></p>
+<p>I ran 5 checks on the data. <strong>All 5 passed.</strong></p>
 <table><tr><th>Check</th><th>Result</th></tr>
 <tr><td>No duplicate reports</td><td>Passed (0 found)</td></tr>
 <tr><td>Every row made it into SQL</td><td>Passed (10,000 of 10,000)</td></tr>
@@ -66,7 +66,7 @@ FROM m ORDER BY month;</pre>
 
 <span class="step">Short version</span>
 <h2 style="margin-top:6px">What I'd tell you in 30 seconds</h2>
-<p>I pulled 10,000 real FDA reports, cleaned them, put them in a SQL database, and answered real questions. Before trusting any number, I ran 5 checks. All passed, and they caught 22 bad dates that would've thrown off the results.</p>
+<p>I pulled 10,000 real FDA reports, cleaned them, put them in a SQL database, and answered 5 questions with SQL. I also ran 5 checks. All passed, and they caught 22 bad dates that would've thrown off the results.</p>
 
 <span class="step">Next step</span>
 <h2 style="margin-top:6px">See the code or say hi</h2>
