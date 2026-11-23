@@ -29,7 +29,7 @@
 <tr><td>Baseline (just guess the average)</td><td>2.68</td><td>0.00</td></tr>
 <tr><td>Ridge regression</td><td>2.77</td><td>-0.07</td></tr></table>
 <p>The random forest won, but barely. Mechanics alone don't explain much of velocity, and there was no age, strength, or training history in the data.</p>
-<h3>4. Keep it honest</h3>
+<h3>4. Make sure the ranking holds up</h3>
 <ul>
 <li>Corrected for the model's average over-prediction</li>
 <li>Only ranked pitchers with at least 20 fastballs (20 of the 71 had fewer), since small samples are noisy</li>
@@ -48,7 +48,7 @@
 
 <span class="step">Short version</span>
 <h2 style="margin-top:6px">What I'd tell you in 30 seconds</h2>
-<p>I built a model to estimate velocity for pitchers who didn't have it measured. It only beat guessing the average by a little, so instead of overselling it, I grouped pitchers into tiers and checked that the top guy held up 25 out of 25 times. Being upfront about what the data can't tell you matters as much as the answer.</p>
+<p>I built a model to estimate velocity for pitchers who didn't have it measured. It only beat guessing the average by a little, so I grouped pitchers into tiers and checked that the top guy held up 25 out of 25 times.</p>
 
 <span class="step">Next step</span>
 <h2 style="margin-top:6px">See the code or say hi</h2>
