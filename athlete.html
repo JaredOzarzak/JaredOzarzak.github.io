@@ -1,0 +1,97 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Athlete Performance Dashboard | Jared Ozarzak</title><link rel="stylesheet" href="style.css">
+<style>
+.demo{border:1px solid #e5e7eb;border-radius:12px;padding:18px;margin:18px 0;background:#fff}
+.demo select{font-size:16px;padding:8px 10px;border:2px solid #14213d;border-radius:8px;background:#fff2cc;font-weight:700;width:100%;max-width:280px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+.kpi{background:#f3f4f6;border-radius:8px;padding:10px;text-align:center}
+.kpi b{display:block;font-size:22px;color:#14213d}.kpi span{font-size:11px;letter-spacing:1px;color:#6b7280;text-transform:uppercase}
+.dgrid{display:grid;grid-template-columns:1fr;gap:10px}#radar{max-width:380px;margin:0 auto;display:block}
+.demo table{width:100%;font-size:14px}.demo td,.demo th{padding:6px 8px;white-space:nowrap}.twrap{overflow-x:auto}
+.good{color:#1e7b34;font-weight:700}.bad{color:#b91c1c;font-weight:700}
+.tag{font-size:12px;padding:2px 8px;border-radius:10px;background:#f3f4f6}.tag.good{background:#e6f4ea}.tag.bad{background:#fde8e8}
+@media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}.dgrid{grid-template-columns:1fr}}
+</style></head><body>
+<nav><div class="wrap"><a class="brand" href="index.html">Jared Ozarzak</a><span class="links"><a href="index.html#projects">All projects</a><a href="index.html#contact">Contact</a></span></div></nav>
+<article>
+<a class="back" href="index.html#projects">← Back to projects</a>
+<div class="eyebrow" style="margin-top:22px">Sports Science · Excel · Dashboards</div>
+<h1 style="font-size:clamp(30px,5vw,42px)">Athlete Performance Dashboard: Look Up Any Athlete in One Click</h1>
+
+<span class="step">Try it</span>
+<h2 style="margin-top:6px">Pick an athlete</h2>
+<p>This is a web version of the Excel dashboard I built. Pick a name and everything updates, same as the yellow dropdown in the spreadsheet.</p>
+<div class="demo">
+<select id="pick" aria-label="Select athlete"></select>
+<div class="kpis"><div class="kpi"><span>TSA Score</span><b id="k1"></b></div><div class="kpi"><span>Team Rank</span><b id="k2"></b></div><div class="kpi"><span>Best Test</span><b id="k3"></b></div><div class="kpi"><span>Work On</span><b id="k4"></b></div></div>
+<div class="dgrid"><div class="twrap"><table><thead><tr><th>Test</th><th>Result</th><th>Team Avg</th><th>T-Score</th><th>Rating</th></tr></thead><tbody id="tb"></tbody></table></div>
+<svg id="radar" viewBox="0 0 320 300" role="img" aria-label="Athlete T-scores vs team average"></svg></div>
+<p style="font-size:13px;color:#6b7280;margin:8px 0 0">Navy = athlete, dashed orange = team average (50). Names are made up.</p>
+</div>
+
+<span class="step">Why I did this</span>
+<h2 style="margin-top:6px">The question</h2>
+<p>When I was a sports scientist at Ohio Athletic Performance, coaches didn't want a spreadsheet full of numbers. They wanted to know: is this kid strong, fast, or explosive compared to the rest of the team, and what should we work on? So I built a dashboard where you pick one athlete and get the answer in a few seconds.</p>
+
+<span class="step">The data</span>
+<h2 style="margin-top:6px">What I worked with</h2>
+<ul>
+<li><strong>30 athletes</strong> with 7 tests each: body mass, bench 1RM, squat 1RM, IMTP peak force, vertical jump, broad jump, and sprint time</li>
+<li>A practice dataset from a data analytics course, with made-up names so it reads like a real roster</li>
+</ul>
+
+<span class="step">How I did it</span>
+<h2 style="margin-top:6px">Step by step</h2>
+<h3>1. Put every test on the same scale</h3>
+<p>You can't compare 2,450 N to 23 inches to 2.06 seconds. So I turned every test into a <strong>T-score</strong>: 50 is the team average and every 10 points is one standard deviation. I flipped sprint so a faster time gives a higher score.</p>
+<h3>2. Roll it into one number</h3>
+<p>I added up the 6 performance T-scores into a <strong>TSA (Total Score of Athleticism)</strong>, so the team average is about 300. I left body mass out of the total since being heavier isn't "better." It's just there for context.</p>
+<h3>3. Build the lookup</h3>
+<p>Used INDEX/MATCH so one dropdown drives everything: the result, team average, T-score, rank out of 30, and a rating from "Needs Work" to "Elite." Conditional formatting turns scores green or red so you can scan it fast.</p>
+<h3>4. Add the team view</h3>
+<p>A second tab ranks all 30 athletes by TSA with a leaderboard chart, plus how far each one is above or below the team average.</p>
+
+<span class="step">What I found</span>
+<h2 style="margin-top:6px">The results</h2>
+<ul>
+<li><strong>Andre Coleman</strong> was the best overall athlete at <strong>401 TSA</strong>, more than 100 points above the team average</li>
+<li>TSA ranged from <strong>216 to 401</strong>, so there's a big gap between the top and bottom of the roster</li>
+<li><strong>15 of 30</strong> athletes were above the team average</li>
+<li>The spider chart shows where an athlete is lopsided, like strong in the weight room but slow off the line, which is exactly what a coach needs to plan training</li>
+</ul>
+
+<span class="step">Short version</span>
+<h2 style="margin-top:6px">What I'd tell you in 30 seconds</h2>
+<p>I turned 7 different tests into one scale so you can compare apples to apples, then built a one-click lookup in Excel that shows any athlete's strengths, weaknesses, and team rank.</p>
+
+<span class="step">Next step</span>
+<h2 style="margin-top:6px">Say hi</h2>
+<div class="btns"><a class="btn primary" href="https://www.linkedin.com/in/jared-ozarzak">Connect on LinkedIn</a><a class="btn" href="index.html#projects">More projects</a></div>
+</article>
+<footer><div class="wrap">Jared Ozarzak · Columbus, OH · <a href="mailto:jared.ozarzak@outlook.com">jared.ozarzak@outlook.com</a></div></footer>
+<script>
+const D={"a": [{"n": "Marcus Bell", "v": [72.4, 70, 105, 2450, 23, 177, 2.06], "t": [43.2, 41.2, 42.2, 41.1, 44.2, 50.7, 49.8], "tsa": 269}, {"n": "Tyler Grant", "v": [86.7, 85, 177.5, 2850, 23, 170, 1.99], "t": [54.5, 47.0, 68.9, 50.9, 44.2, 48.2, 51.6], "tsa": 311}, {"n": "Devin Brooks", "v": [68.9, 75, 100, 2800, 29, 158, 2.22], "t": [40.5, 43.1, 40.4, 49.6, 52.8, 44.0, 45.6], "tsa": 276}, {"n": "Jalen Carter", "v": [74.1, 80, 145, 3100, 36, 186, 1.89], "t": [44.6, 45.0, 56.9, 57.0, 62.7, 53.8, 54.2], "tsa": 330}, {"n": "Ethan Moore", "v": [95.6, 110, 172.5, 3250, 22, 200, 1.95], "t": [61.4, 56.6, 67.0, 60.6, 42.8, 58.8, 52.6], "tsa": 338}, {"n": "Noah Ramirez", "v": [91.3, 110, 115, 2550, 16, 161, 2.57], "t": [58.1, 56.6, 45.9, 43.5, 34.2, 45.1, 36.5], "tsa": 262}, {"n": "Isaiah Ward", "v": [88.5, 110, 150, 3050, 32, 194, 1.71], "t": [55.9, 56.6, 58.8, 55.7, 57.0, 56.7, 58.9], "tsa": 344}, {"n": "Caleb Foster", "v": [79.8, 87.5, 125, 2650, 25, 159, 2.04], "t": [49.0, 47.9, 49.6, 46.0, 47.1, 44.4, 50.3], "tsa": 285}, {"n": "Logan Hayes", "v": [61.2, 60, 95, 2300, 20, 123, 2.77], "t": [34.4, 37.3, 38.5, 37.4, 39.9, 31.7, 31.3], "tsa": 216}, {"n": "Owen Mitchell", "v": [65.5, 65, 100, 2400, 17, 151, 2.44], "t": [37.8, 39.2, 40.4, 39.9, 35.6, 41.5, 39.9], "tsa": 236}, {"n": "Andre Coleman", "v": [102.4, 137.5, 150, 3550, 39, 229, 1.25], "t": [66.8, 67.3, 58.8, 68.0, 67.0, 69.0, 70.9], "tsa": 401}, {"n": "Darius King", "v": [84.9, 95, 175, 3350, 38, 226, 1.26], "t": [53.0, 50.8, 68.0, 63.1, 65.6, 67.9, 70.6], "tsa": 386}, {"n": "Mason Reed", "v": [90.1, 115, 115, 2750, 26, 157, 2], "t": [57.1, 58.6, 45.9, 48.4, 48.5, 43.7, 51.3], "tsa": 296}, {"n": "Cole Patterson", "v": [69.3, 70, 175, 2950, 38, 209, 1.74], "t": [40.8, 41.2, 68.0, 53.3, 65.6, 61.9, 58.1], "tsa": 348}, {"n": "Trey Simmons", "v": [63.8, 67.5, 105, 2350, 25, 151, 2.41], "t": [36.5, 40.2, 42.2, 38.6, 47.1, 41.5, 40.7], "tsa": 250}, {"n": "Jordan Price", "v": [97.5, 127.5, 155, 3400, 28, 203, 1.85], "t": [62.9, 63.4, 60.6, 64.3, 51.3, 59.8, 55.2], "tsa": 355}, {"n": "Brandon Ellis", "v": [76.6, 72.5, 120, 2550, 28, 186, 1.97], "t": [46.5, 42.1, 47.7, 43.5, 51.3, 53.8, 52.1], "tsa": 290}, {"n": "Gavin Torres", "v": [67.4, 70, 100, 2250, 16, 132, 2.68], "t": [39.3, 41.2, 40.4, 36.2, 34.2, 34.9, 33.6], "tsa": 220}, {"n": "Xavier Hunt", "v": [99.2, 135, 120, 2850, 31, 186, 2.14], "t": [64.3, 66.3, 47.7, 50.9, 55.6, 53.8, 47.7], "tsa": 322}, {"n": "Ryan Sullivan", "v": [71.7, 67.5, 130, 2500, 26, 170, 2.07], "t": [42.7, 40.2, 51.4, 42.3, 48.5, 48.2, 49.5], "tsa": 280}, {"n": "Malik Jenkins", "v": [82.6, 92.5, 127.5, 3150, 29, 191, 1.97], "t": [51.2, 49.9, 50.5, 58.2, 52.8, 55.6, 52.1], "tsa": 319}, {"n": "Chase Porter", "v": [70.9, 75, 95, 2350, 16, 143, 2.45], "t": [42.1, 43.1, 38.5, 38.6, 34.2, 38.7, 39.6], "tsa": 233}, {"n": "Elijah Bryant", "v": [94.8, 135, 100, 3000, 35, 166, 1.86], "t": [60.8, 66.3, 40.4, 54.5, 61.3, 46.8, 55.0], "tsa": 324}, {"n": "Hunter Cole", "v": [89.6, 112.5, 127.5, 3200, 29, 185, 1.8], "t": [56.7, 57.6, 50.5, 59.4, 52.8, 53.5, 56.5], "tsa": 330}, {"n": "Jaylen Wright", "v": [66.2, 70, 100, 2450, 20, 139, 2.21], "t": [38.4, 41.2, 40.4, 41.1, 39.9, 37.3, 45.9], "tsa": 246}, {"n": "Cameron Diaz", "v": [73.5, 72.5, 100, 2350, 22, 143, 2.46], "t": [44.1, 42.1, 40.4, 38.6, 42.8, 38.7, 39.4], "tsa": 242}, {"n": "Dylan Murphy", "v": [92.7, 117.5, 120, 3100, 33, 187, 1.76], "t": [59.2, 59.5, 47.7, 57.0, 58.5, 54.2, 57.6], "tsa": 334}, {"n": "Aiden Russell", "v": [87.3, 100, 150, 3300, 34, 227, 1.62], "t": [54.9, 52.8, 58.8, 61.9, 59.9, 68.2, 61.2], "tsa": 363}, {"n": "Kobe Henderson", "v": [101.6, 140, 145, 3450, 35, 196, 1.73], "t": [66.1, 68.2, 56.9, 65.5, 61.3, 57.4, 58.4], "tsa": 368}, {"n": "Luke Barnes", "v": [64.5, 60, 90, 2200, 21, 147, 2.67], "t": [37.0, 37.3, 36.7, 35.0, 41.3, 40.1, 33.9], "tsa": 224}], "mu": [81.02, 92.83, 126.17, 2815, 27.07, 175.07, 2.05]};
+const L=["Body Mass (kg)","Bench 1RM (kg)","Squat 1RM (kg)","IMTP (N)","Vertical (in)","Broad Jump (cm)","Sprint (s)"];
+const S=["Body Mass","Bench","Squat","IMTP","Vertical","Broad","Sprint"];
+const F=[1,0,0,0,0,0,2];
+const fmt=(v,k)=>k==3?Math.round(v).toLocaleString():v.toFixed(F[k]);
+const sel=document.getElementById('pick');
+[...D.a].sort((a,b)=>a.n.localeCompare(b.n)).forEach(a=>{const o=document.createElement('option');o.textContent=a.n;sel.appendChild(o)});
+const rate=t=>t>=60?"Elite":t>=55?"Above Avg":t>45?"Average":t>40?"Below Avg":"Needs Work";
+function radar(t){const cx=160,cy=150,R=105,n=6,ang=i=>-Math.PI/2+i*2*Math.PI/n;
+ const pt=(v,i)=>{const r=R*(v-20)/60;return[cx+r*Math.cos(ang(i)),cy+r*Math.sin(ang(i))]};
+ let s='';[35,50,65,80].forEach(v=>{s+='<polygon fill="none" stroke="#e5e7eb" points="'+[0,1,2,3,4,5].map(i=>pt(v,i).join(',')).join(' ')+'"/>'});
+ for(let i=0;i<n;i++){const[x,y]=pt(80,i),[lx,ly]=pt(92,i);s+='<line x1="'+cx+'" y1="'+cy+'" x2="'+x+'" y2="'+y+'" stroke="#e5e7eb"/><text x="'+lx+'" y="'+(ly+4)+'" text-anchor="middle" font-size="12" font-weight="700" fill="#374151" font-family="Arial">'+S[i+1]+'</text>'}
+ s+='<polygon fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5 4" points="'+[0,1,2,3,4,5].map(i=>pt(50,i).join(',')).join(' ')+'"/>';
+ s+='<polygon fill="#14213d" fill-opacity=".15" stroke="#14213d" stroke-width="2.5" points="'+t.slice(1).map((v,i)=>pt(Math.max(20,Math.min(80,v)),i).join(',')).join(' ')+'"/>';
+ t.slice(1).forEach((v,i)=>{const[x,y]=pt(Math.max(20,Math.min(80,v)),i);s+='<circle cx="'+x+'" cy="'+y+'" r="3.5" fill="#14213d"/>'});
+ document.getElementById('radar').innerHTML=s}
+function show(){const a=D.a.find(x=>x.n==sel.value);const rank=1+D.a.filter(x=>x.tsa>a.tsa).length;const p=a.t.slice(1);
+ document.getElementById('k1').textContent=a.tsa;document.getElementById('k2').textContent=rank+' / '+D.a.length;
+ document.getElementById('k3').textContent=S[1+p.indexOf(Math.max(...p))];document.getElementById('k4').textContent=S[1+p.indexOf(Math.min(...p))];
+ document.getElementById('tb').innerHTML=a.v.map((v,k)=>{const t=a.t[k],c=k&&t>=55?'good':k&&t<=45?'bad':'';
+  return '<tr'+(k?'':' style="color:#6b7280;font-style:italic"')+'><td>'+L[k]+'</td><td><b>'+fmt(v,k)+'</b></td><td>'+fmt(D.mu[k],k)+'</td><td class="'+c+'">'+t.toFixed(1)+'</td><td>'+(k?'<span class="tag '+c+'">'+rate(t)+'</span>':'Context')+'</td></tr>'}).join('');
+ radar(a.t)}
+sel.value='Andre Coleman';sel.onchange=show;show();
+</script>
+</body></html>
