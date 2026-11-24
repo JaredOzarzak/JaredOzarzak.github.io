@@ -31,12 +31,12 @@
 
 <span class="step">Why I did this</span>
 <h2 style="margin-top:6px">The question</h2>
-<p>When I was a sports scientist at Ohio Athletic Performance, coaches didn't want a spreadsheet full of numbers. They wanted to know: is this kid strong, fast, or explosive compared to the rest of the team, and what should we work on? So I built a dashboard where you pick one athlete and get the answer in a few seconds.</p>
+<p>When I was a sports scientist at Ohio Athletic Performance, coaches needed numbers fast. There are a few key things they want to know: is this kid strong, fast, or explosive? What's their RSI-mod? Are they fatiguing? What should we work on? So I built a dashboard where you can pick one athlete and get your answer in a few seconds.</p>
 
 <span class="step">The data</span>
 <h2 style="margin-top:6px">What I worked with</h2>
 <ul>
-<li><strong>30 athletes</strong> with 7 tests each: body mass, bench 1RM, squat 1RM, IMTP peak force, vertical jump, broad jump, and sprint time</li>
+<li>A team of <strong>30 athletes</strong> with 7 tests each (body mass, bench 1RM, squat 1RM, IMTP peak force, vertical jump, broad jump, and sprint time). You can always add whatever tests you want</li>
 <li>A practice dataset from a data analytics course, with made-up names so it reads like a real roster</li>
 </ul>
 
@@ -47,14 +47,14 @@
 <h3>2. Roll it into one number</h3>
 <p>I added up the 6 performance T-scores into a <strong>TSA (Total Score of Athleticism)</strong>, so the team average is about 300. I left body mass out of the total since being heavier isn't "better." It's just there for context.</p>
 <h3>3. Build the lookup</h3>
-<p>Used INDEX/MATCH so one dropdown drives everything: the result, team average, T-score, rank out of 30, and a rating from "Needs Work" to "Elite." Conditional formatting turns scores green or red so you can scan it fast.</p>
+<p>Used INDEX and MATCH so one dropdown drives everything: the result, team average, T-score, rank out of 30, and a rating from "Needs Work" to "Elite." Conditional formatting turns scores green or red so you can scan it fast.</p>
 <h3>4. Add the team view</h3>
 <p>A second tab ranks all 30 athletes by TSA with a leaderboard chart, plus how far each one is above or below the team average.</p>
 
 <span class="step">What I found</span>
 <h2 style="margin-top:6px">The results</h2>
 <ul>
-<li><strong>Andre Coleman</strong> was the best overall athlete at <strong>401 TSA</strong>, more than 100 points above the team average</li>
+<li><strong>Andre Coleman</strong> was the best overall athlete at <strong>401 TSA</strong>, more than 100 points above the team average. Click on him up top and see it for yourself</li>
 <li>TSA ranged from <strong>216 to 401</strong>, so there's a big gap between the top and bottom of the roster</li>
 <li><strong>15 of 30</strong> athletes were above the team average</li>
 <li>The spider chart shows where an athlete is lopsided, like strong in the weight room but slow off the line, which is exactly what a coach needs to plan training</li>
@@ -62,10 +62,14 @@
 
 <span class="step">Short version</span>
 <h2 style="margin-top:6px">What I'd tell you in 30 seconds</h2>
-<p>I turned 7 different tests into one scale so you can compare apples to apples, then built a one-click lookup in Excel that shows any athlete's strengths, weaknesses, and team rank.</p>
+<p>I turned 7 different tests into one scale so you can actually compare them, then built a one-click lookup in Excel that shows an athlete's strengths, weaknesses, and team rank.</p>
+
+<span class="step">What I'd add next</span>
+<h2 style="margin-top:6px">Tracking fatigue</h2>
+<p>This dataset is a one-time test, so it can't show fatigue. With real force plate data, I'd add countermovement jump height and RSI-mod tested every week. Those are the metrics the research points to for tracking fatigue and readiness, and a drop from an athlete's own baseline is the flag that tells a coach to adjust training.</p>
 
 <span class="step">Next step</span>
-<h2 style="margin-top:6px">Say hi</h2>
+<h2 style="margin-top:6px">Feel free to reach out</h2>
 <div class="btns"><a class="btn primary" href="https://www.linkedin.com/in/jared-ozarzak">Connect on LinkedIn</a><a class="btn" href="index.html#projects">More projects</a></div>
 </article>
 <footer><div class="wrap">Jared Ozarzak · Columbus, OH · <a href="mailto:jared.ozarzak@outlook.com">jared.ozarzak@outlook.com</a></div></footer>
