@@ -17,7 +17,7 @@ details.sql pre{margin:0;border-radius:0 0 10px 10px;white-space:pre;overflow-x:
 <div class="eyebrow" style="margin-top:22px">Project · MySQL · Healthcare</div>
 <h1 style="font-size:clamp(30px,5vw,42px)">Hospital Visits by Specialty: Which Ones Keep Hospitals Busiest?</h1>
 
-<div class="callout"><strong>Short answer so far:</strong> Internal Medicine had the most hospital visits of any known specialty, with <strong>14,635</strong>. Emergency/Trauma was next with <strong>7,565</strong>, then Family/General Practice with <strong>7,440</strong>.</div>
+<div class="callout"><strong>Short answer:</strong> Internal Medicine had the most hospital visits (<strong>14,635</strong>) and the most total hospital days (<strong>67,084</strong>). But its stays weren't long, about 4.6 days each. It led because of volume. The longest stays were in smaller specialties like Physical Medicine and Rehabilitation, at <strong>8.9 days</strong> per visit.</div>
 
 <span class="step">Why I did this</span>
 <h2 style="margin-top:6px">Most visits isn't the same as most busy</h2>
@@ -57,15 +57,18 @@ LIMIT 10;</pre></details>
 <div class="q">
 <h3>2. Which 10 specialties had the longest average hospital stays?</h3>
 <p>This one looks at how long a typical visit lasts, not how many visits there are. A specialty can have fewer patients but keep them in the hospital longer.</p>
+<p><strong>The catch I ran into:</strong> my first version was led by specialties with fewer than 50 visits. A couple of long stays can make an average look huge. So I added a rule: a specialty needs at least 50 visits to make the list.</p>
 <details class="sql"><summary>Show the SQL</summary>
 <pre>SELECT medical_specialty,
-       AVG(time_in_hospital) AS avg_stay_days
+       COUNT(*) AS visits,
+       ROUND(AVG(time_in_hospital), 1) AS avg_stay_days
 FROM patient.health
 WHERE medical_specialty &lt;&gt; '?'
 GROUP BY medical_specialty
+HAVING COUNT(*) &gt;= 50
 ORDER BY avg_stay_days DESC
 LIMIT 10;</pre></details>
-<p>In plain English: find the average number of days per visit for each specialty, then show the 10 longest.</p>
+<p>In plain English: find the average days per visit for each specialty, only keep specialties with at least 50 visits, then show the 10 longest.</p>
 </div>
 
 <div class="q">
@@ -77,7 +80,8 @@ LIMIT 10;</pre></details>
 FROM patient.health
 WHERE medical_specialty &lt;&gt; '?'
 GROUP BY medical_specialty
-ORDER BY total_days DESC;</pre></details>
+ORDER BY total_days DESC
+LIMIT 10;</pre></details>
 <p>In plain English: add up all the hospital days for each specialty and rank them from most to least.</p>
 </div>
 
@@ -89,15 +93,24 @@ ORDER BY total_days DESC;</pre></details>
 <tr><td>2</td><td>Emergency/Trauma</td><td>7,565</td></tr>
 <tr><td>3</td><td>Family/General Practice</td><td>7,440</td></tr></table>
 <p>Internal Medicine had almost twice as many visits as the next specialty.</p>
-<!-- Add Question 2 and Question 3 results here once the numbers are in. -->
 
-<span class="step">Short version</span>
-<h2 style="margin-top:6px">What I'd tell you in 30 seconds</h2>
-<p>I used SQL in MySQL Workbench to compare hospital visits by specialty three ways: number of visits, average stay, and total hospital days. I left out visits where the specialty wasn't recorded instead of guessing. Internal Medicine had the most visits by a wide margin, with 14,635.</p>
+<h3>Longest average stays (at least 50 visits)</h3>
+<table><tr><th>Rank</th><th>Specialty</th><th>Visits</th><th>Avg stay (days)</th></tr>
+<tr><td>1</td><td>Physical Medicine and Rehabilitation</td><td>391</td><td>8.9</td></tr>
+<tr><td>2</td><td>Psychiatry</td><td>854</td><td>6.4</td></tr>
+<tr><td>3</td><td>Psychology</td><td>101</td><td>5.9</td></tr>
+<tr><td>4</td><td>Surgery-Cardiovascular/Thoracic</td><td>652</td><td>5.8</td></tr>
+<tr><td>5</td><td>Pulmonology</td><td>871</td><td>5.2</td></tr></table>
+<p>Rehab stays make sense as the longest. Patients there are recovering and building back function, which takes time.</p>
 
-<span class="step">Next step</span>
-<h2 style="margin-top:6px">Say hi</h2>
-<div class="btns"><a class="btn primary" href="https://www.linkedin.com/in/jared-ozarzak">Connect on LinkedIn</a><a class="btn" href="index.html#projects">More projects</a></div>
-</article>
-<footer><div class="wrap">Jared Ozarzak · Columbus, OH · <a href="mailto:jared.ozarzak@outlook.com">jared.ozarzak@outlook.com</a></div></footer>
-</body></html>
+<h3>Most total hospital days</h3>
+<table><tr><th>Rank</th><th>Specialty</th><th>Total days</th></tr>
+<tr><td>1</td><td>Internal Medicine</td><td>67,084</td></tr>
+<tr><td>2</td><td>Emergency/Trauma</td><td>32,981</td></tr>
+<tr><td>3</td><td>Family/General Practice</td><td>32,464</td></tr>
+<tr><td>4</td><td>Cardiology</td><td>18,869</td></tr>
+<tr><td>5</td><td>Surgery-General</td><td>14,113</td></tr></table>
+
+<h3>Why it matters</h3>
+<ul>
+<li>The top 3 for total days are the same top 3 for visits. They average about 4.4 to 4.6 days per stay, so they use the most hospital time because of
