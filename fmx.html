@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="How Jared Ozarzak cleaned, checked, and joined school facilities data in Power Query, then tested the results in Excel, Google Sheets, and Copilot.">
-  <title>School Facility Data Integration | Jared Ozarzak</title>
+  <title>How I Cleaned Up School Facilities Data | Jared Ozarzak</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,13 +12,13 @@
 <article>
   <a class="back" href="index.html#projects">← Back to projects</a>
   <div class="eyebrow" style="margin-top:22px">Project · Power Query · Excel · Google Sheets · Copilot</div>
-  <h1 style="font-size:clamp(30px,5vw,42px)">School Facility Data: Can I Get Messy Records Ready to Migrate?</h1>
+  <h1 style="font-size:clamp(30px,5vw,42px)">How I Cleaned Up School Facilities Data</h1>
 
-  <div class="callout"><strong>Short answer.</strong> I matched 227 of 236 improvement records to schools and set the other 9 aside for review. Every row was accounted for. Once the equipment data was clean, Copilot matched all 7 numbers I checked against my Excel workbook.</div>
+  <div class="callout">I matched <strong>227 of 236 improvement records</strong> to a school. The other 9 went on a list to check. I also gave Copilot the cleaned equipment data to see if it got the same numbers I did. It got <strong>7 out of 7</strong>.</div>
 
   <span class="step">Why I did this</span>
-  <h2 style="margin-top:6px">What happens when the files don't agree?</h2>
-  <p>I wanted to see what it takes to get school facilities data ready for a system like FMX. If a school has a different name in two files or an equipment record has no serial number, somebody has to figure that out before the data gets imported. If the records are right, a facilities team can see what needs attention first and plan repairs around the school day.</p>
+  <h2 style="margin-top:6px">The files didn't always agree</h2>
+  <p>I'm from Columbus, so I used Columbus City Schools data to see what it takes to get these files ready for a system like FMX. I needed to know which school each record belonged to and which rows needed another look. That's the stuff a facilities team needs to get right before it can use the data to plan repairs around the school day.</p>
 
   <span class="step">The data</span>
   <h2 style="margin-top:6px">What I worked with</h2>
@@ -30,7 +30,7 @@
   <p>This was an independent practice project. The equipment conditions and repair costs are simulated, and I didn't upload anything to FMX.</p>
 
   <span class="step" id="workflow">How I did it</span>
-  <h2 style="margin-top:6px">From separate files to one school inventory</h2>
+  <h2 style="margin-top:6px">How I put the files together</h2>
   <ol>
     <li>I loaded the CSVs into Power Query and expanded the equipment and assessment fields in the JSON.</li>
     <li>I cleaned up names, IDs, and data types, then used school ID to join the records.</li>
@@ -39,12 +39,12 @@
   </ol>
 
   <span class="step" id="quality">How I checked it</span>
-  <h2 style="margin-top:6px">Where did every row go?</h2>
+  <h2 style="margin-top:6px">I counted the rows before and after</h2>
   <ul>
     <li><strong>Improvements:</strong> 227 matched (96.19%), and 9 went to the exception list. The check found no repeated school and project pairs. The match rate tells me how many rows joined. I'd still review the individual matches before importing them.</li>
     <li><strong>Equipment:</strong> 1 exact duplicate, 9 valid records, and 3 exceptions accounted for all 13 rows. All 9 valid records made it through the join without creating extra rows.</li>
   </ul>
-  <p>I kept the failed rows and the reason each one failed. That gives someone a list they can work through and check against the original records.</p>
+  <p>I kept the rows that failed and wrote down why. If I were doing the import, that list is where I’d start.</p>
 
   <span class="step" id="insights">What I found</span>
   <h2 style="margin-top:6px">Four assets drove most of the repair cost</h2>
@@ -62,7 +62,7 @@
   <p>I'd check those four assets first and verify the estimates in the field. I'd also look at what each repair means for keeping classrooms open and safe. A cheaper repair can still be urgent.</p>
 
   <span class="step" id="automation">What I tested with Copilot</span>
-  <h2 style="margin-top:6px">Could Copilot get the same answers I did?</h2>
+  <h2 style="margin-top:6px">Copilot got the same numbers</h2>
   <p>I built the Excel workbook by hand first. Then I gave Copilot the same cleaned equipment data in a separate workbook and checked each result against mine.</p>
   <table>
     <thead><tr><th scope="col">Metric</th><th scope="col">Manual</th><th scope="col">Copilot</th></tr></thead>
@@ -79,8 +79,8 @@
   <p>All 7 numbers matched. The saved Copilot workbook reported <strong>14 of 15 quality checks passed</strong>. The one failure flagged 8 column headers that needed to be lowercase. This test started with clean data. I'd fix the headers and test a refresh with new rows before relying on it for a live import.</p>
 
   <span class="step">What I'd do next</span>
-  <h2 style="margin-top:6px">Resolve the exceptions before importing</h2>
-  <p>I'd go back to the source files for the unresolved rows, make corrections where I can verify them, and rerun the checks. That's the part I'd carry into a real migration. A school team needs to know what made it into the system and what still needs a look before it uses that data to plan repairs.</p>
+  <h2 style="margin-top:6px">What I’d check before an import</h2>
+  <p>I'd go back to the original files for the rows I couldn't match, fix what I can verify, and run the checks again. I'd also hand off the list of anything I still couldn't resolve so the team knows what to look for.</p>
   <p>I saved the manual Excel workbook, the Copilot comparison, the Google Sheets analysis, and a written procedure for rerunning the workflow.</p>
   <p><a href="https://help.gofmx.com/hc/en-us/articles/38962643742477-FMX-Data-Migration-Request-Form">FMX data migration guide</a> · <a href="https://www.gofmx.com/school-facilities-management-software/">FMX school facilities management</a> · <a href="https://help.gofmx.com/hc/en-us/articles/204688159-How-is-FMX-implemented-for-new-customers">FMX implementation overview</a> · <a href="https://remoteroles.so/jobs/facilities-management-express-professional-services-data-specialist-columbus-1f60512800a6efe6">FMX data specialist role description</a></p>
 
